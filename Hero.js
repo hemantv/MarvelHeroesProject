@@ -10,7 +10,13 @@ const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 const STATUSBAR_HEIGHT = getStatusBarHeight();
 
-const Hero = () => {
+const Hero = ({
+    id,
+    color,
+    title,
+    name,
+    image
+}) => {
 
     const backgroundAnim = new Animated.Value(0);
 
@@ -28,7 +34,7 @@ const Hero = () => {
 
     const background = backgroundAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [600, WINDOW_HEIGHT]
+        outputRange: [400, 0]
     })
 
     const avatarAnim = new Animated.Value(0);
@@ -47,7 +53,7 @@ const Hero = () => {
 
     const avatar = avatarAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [140, STATUSBAR_HEIGHT]
+        outputRange: [200, STATUSBAR_HEIGHT]
     })
 
     const knowMoreAnim = new Animated.Value(0);
@@ -171,31 +177,34 @@ const Hero = () => {
     }
 
     return (
-        <Container>
+        <Container style={{ width: WINDOW_WIDTH, height: WINDOW_HEIGHT }}>
             <AnimatedBackground style={{
-                height: background
+                backgroundColor: color,
+                transform: [{ translateY: background }]
             }} />
             <AnimatedBackground2 style={{
                 transform: [{ translateY: background2 }]
             }} />
-            <AnimatedAvatar
-                source={require('./assets/ironman.png')}
+            {/* <AnimatedAvatar
+                source={image}
                 style={{
+                    width: WINDOW_WIDTH,
+                    height: WINDOW_WIDTH,
                     transform: [{ translateY: avatar }]
                 }}
-            />
-            {/* <AnimatedForeground style={{
+            /> */}
+            <AnimatedForeground style={{
                 bottom: foreground
             }}>
                 <AnimatedTitle style={{
                     color: titleColor
                 }}>
-                    {'Iron Man'.split(' ').join('\n')}
+                    {title.split(' ').join('\n')}
                 </AnimatedTitle>
                 <AnimatedName style={{
                     color: titleColor
                 }}>
-                    Tony Stark
+                    {name}
                 </AnimatedName>
                 <AnimatedKnowMore onPress={onKnowMorePress} style={{
                     left: knowMoreAnim
@@ -214,24 +223,23 @@ const Hero = () => {
 
                     </Description>
                 <Back onPress={onBackPress}>
-                    <BackLabel>Back</BackLabel>
+                    <BackLabel style={{ color: color }}>Back</BackLabel>
                 </Back>
-            </AnimatedDetail> */}
+            </AnimatedDetail>
         </Container>
     )
 }
 
-const Container = styled.View`    
-    flex: 1;
+const Container = styled.View`        
+    
 `
 
-const Background = styled.View`   
-    position: absolute;
-    width: 100%;    
+const Background = styled.View`       
+    width: 100%;   
+    height: 100%; 
     bottom: 0;
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
-    background-color: orange;
 `
 
 const AnimatedBackground = Animated.createAnimatedComponent(Background);
@@ -255,8 +263,6 @@ const AnimatedForeground = Animated.createAnimatedComponent(Foreground);
 
 const Avatar = styled.Image`
     position: absolute;
-    width: 400px;
-    height: 400px;
 `
 
 const AnimatedAvatar = Animated.createAnimatedComponent(Avatar);
@@ -316,8 +322,7 @@ const Description = styled.Text`
 const Back = styled.TouchableOpacity``;
 
 const BackLabel = styled.Text`
-    font-size: 24px;
-    color: orange;
+    font-size: 24px;    
     text-transform: lowercase;
     line-height: 60px;
 `
