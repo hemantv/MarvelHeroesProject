@@ -23,8 +23,8 @@ import {
 import Hero from './Hero';
 
 const data = [
-  { id: 'spider', color: '#c51926', title: 'Spider Man', name: 'Peter Parker', image: require('./assets/spiderman.png') },
-  { key: 'iron', color: '#e08f04', title: 'Iron Man', name: 'Tony Stark', image: require('./assets/ironman.png') },
+  /* { id: 'spider', color: '#c51926', title: 'Spider Man', name: 'Peter Parker', image: require('./assets/spiderman.png') },
+  { key: 'iron', color: '#e08f04', title: 'Iron Man', name: 'Tony Stark', image: require('./assets/ironman.png') }, */
   { key: 'iron2', color: 'blue', title: 'Iron Man 2', name: 'Tony Stark', image: require('./assets/ironman.png') },
   { key: 'iron3', color: 'aqua', title: 'Iron Man 3', name: 'Tony Stark', image: require('./assets/ironman.png') },
   { key: 'iron4', color: 'green', title: 'Iron Man 4', name: 'Tony Stark', image: require('./assets/ironman.png') },
@@ -34,13 +34,15 @@ const data = [
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
+const SPACING = 10;
+const VISIBLE_ITEMS = 3;
+
 const App = () => {
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
   const scrollXIndex = React.useRef(new Animated.Value(0)).current;
   const index = React.useRef(0);
   const setActiveIndex = React.useCallback((activeIndex) => {
-    console.log(activeIndex);
     scrollXIndex.setValue(activeIndex);
     index.current = activeIndex;
   });
@@ -73,6 +75,13 @@ const App = () => {
     }, 2000);
   }, []); */
 
+  React.useEffect(() => {
+    Animated.spring(scrollX, {
+      toValue: scrollXIndex,
+      useNativeDriver: true,
+    }).start();
+  });
+
   return (
     <>
       <StatusBar hidden />
@@ -87,9 +96,8 @@ const App = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             flex: 1,
-            justifyContent: 'center',
-            marginTop: 50,
           }}
+          inverted={true}
           scrollEnabled={false}
           removeClippedSubviews={false}
           keyExtractor={(item, index) => index.toString()}
@@ -100,7 +108,7 @@ const App = () => {
             style,
             ...props
           }) => {
-            const newStyle = [style, { zIndex: index + 1 }];
+            const newStyle = [style, { zIndex: data.length - index }];
             return (
               <View style={newStyle} index={index} {...props}>
                 {children}
@@ -110,18 +118,27 @@ const App = () => {
           renderItem={({ item, index }) => {
             const inputRange = [index - 1, index, index + 1];
             const translateX = scrollX.interpolate({
+              inputRange: [(index - 1) * WINDOW_WIDTH, index * WINDOW_WIDTH, (index + 1) * WINDOW_WIDTH],
+              outputRange: [(index - 1) * 100, index * 100, (index + 1) * 100],
+            });
+            const scaleY = scrollXIndex.interpolate({
               inputRange,
-              outputRange: [-WINDOW_WIDTH, 0, WINDOW_WIDTH]
-            })
+              outputRange: [1.4, 1, 0.8],
+            });
+            const opacity = scrollXIndex.interpolate({
+              inputRange,
+              outputRange: [1 - 1 / VISIBLE_ITEMS, 1, 0],
+            });
 
             return (
               <Animated.View style={{
                 position: 'absolute',
-                left: -WINDOW_WIDTH / 2,
+                opacity,
                 transform: [
                   {
                     translateX,
-                  }
+                  },
+                  { scaleY }
                 ],
               }}>
                 <Hero {...item} />
