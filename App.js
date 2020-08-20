@@ -22,48 +22,67 @@ import {
 } from 'react-native';
 import Hero from './Hero';
 
-const data = [
-  /* { id: 'spider', color: '#c51926', title: 'Spider Man', name: 'Peter Parker', image: require('./assets/spiderman.png') },
-  { key: 'iron', color: '#e08f04', title: 'Iron Man', name: 'Tony Stark', image: require('./assets/ironman.png') }, */
-  { key: 'iron2', color: 'blue', title: 'Iron Man 2', name: 'Tony Stark', image: require('./assets/ironman.png') },
-  { key: 'iron3', color: 'aqua', title: 'Iron Man 3', name: 'Tony Stark', image: require('./assets/ironman.png') },
-  { key: 'iron4', color: 'green', title: 'Iron Man 4', name: 'Tony Stark', image: require('./assets/ironman.png') },
-  { key: 'iron5', color: 'yellow', title: 'Iron Man 5', name: 'Tony Stark', image: require('./assets/ironman.png') }
+const DATA = [
+  { id: 'spider_man', color: '#C51926', title: 'Spider Man', name: 'Peter Parker', description: 'Peter Benjamin Parker is a high school student and a superhero with spider-like abilities, fighting crime as his alter ego Spider-Man.', image: require('./assets/spider_man.png') },
+  { key: 'iron_man', color: '#E08F04', title: 'Iron Man', name: 'Tony Stark', description: 'Tony Stark is a genius, billionaire, philanthropist and the former head of Stark Industries. Using his own great wealth and exceptional technical knowledge.', image: require('./assets/iron_man.png') },
+  { key: 'captain_america', color: '#204CC3', title: 'Captain America', name: 'Steve Rogers', description: 'Steven Grant "Steve" Rogers was a World War II veteran, and is known as the world\'s first superhero. Born within Brooklyn, New York City.', image: require('./assets/captain_america.png') },
+  /* { key: 'black_widow', color: '#e08f04', title: 'Black Widow', name: 'Natalia Alianovna Romanoff', description: 'Natalia Alianovna "Natasha" Romanoff was one of the most talented spies and assassins in the entire world and a founding member of the Avengers.', image: require('./assets/black_widow.png') },
+  { key: 'thor', color: '#e08f04', title: 'Thor Odinson', name: 'Thor Odinson', description: 'Thor Odinson is the current king of Asgard, a founding member of the Avengers, and the God of Thunder.', image: require('./assets/thor.png') }, */
+  { key: 'doctor_strange', color: '#ab0c0c', title: 'Doctor Strange', name: 'Stephen Vincent Strange', description: 'Stephen Vincent Strange M.D., Ph.D is a powerful sorcerer and Master of the Mystic Arts.', image: require('./assets/doctor_strange.png') },
+  { key: 'hulk', color: '#875094', title: 'Hulk', name: 'Robert Bruce Banner', description: 'Robert Bruce Banner, M.D., Ph.D., is a renowned scientist and a founding member of the Avengers. .', image: require('./assets/hulk.png') },
 ]
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const WINDOW_HEIGHT = Dimensions.get('window').height;
 
-const SPACING = 10;
 const VISIBLE_ITEMS = 3;
 
 const App = () => {
 
+  const [data, setData] = React.useState(DATA);
+
   const scrollX = React.useRef(new Animated.Value(0)).current;
-  const scrollXIndex = React.useRef(new Animated.Value(0)).current;
-  const index = React.useRef(0);
-  const setActiveIndex = React.useCallback((activeIndex) => {
-    scrollXIndex.setValue(activeIndex);
-    index.current = activeIndex;
-  });
+  const scrollXItem = React.useRef(new Animated.Value(0)).current;
+  const scrollXAnimated = React.useRef(new Animated.Value(0)).current;
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+
+  const currentIndexRef = React.useRef(0);
+  const setCurrentIndexRef = (newCurrentIndex) => {
+    currentIndexRef.current = newCurrentIndex;
+    setCurrentIndex(newCurrentIndex);
+  }
 
   const panResponder = React.useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderMove: Animated.event(
-        [
-          null,
-          { dx: scrollX }
-        ],
-        {
-          useNativeDriver: false
+      onPanResponderMove: (e, gestureState) => {
+        if (gestureState.dx < 0) {
+          scrollX.setValue(gestureState.dx);
+          scrollXItem.setValue(gestureState.dx);
         }
-      ),
+      },
       onPanResponderRelease: (e, gestureState) => {
-        if (index.current == data.length - 1) {
-          setActiveIndex(0);
+        if (gestureState.dx < -120) {
+          Animated.timing(scrollX, {
+            toValue: -WINDOW_WIDTH - 100,
+            useNativeDriver: false
+          }).start(() => {
+            scrollX.setValue(0);
+            Animated.timing(scrollXItem, {
+              toValue: 0,
+              useNativeDriver: false
+            }).start();
+            setCurrentIndexRef(currentIndexRef.current + 1);
+          });
         } else {
-          setActiveIndex(index.current + 1);
+          Animated.timing(scrollX, {
+            toValue: 0,
+            useNativeDriver: false
+          }).start();
+          Animated.timing(scrollXItem, {
+            toValue: 0,
+            useNativeDriver: false
+          }).start();
         }
       }
     })
@@ -71,24 +90,33 @@ const App = () => {
 
   /* React.useEffect(() => {
     setInterval(() => {
-      setActiveIndex(index.current + 1);
-    }, 2000);
+      if (currentIndexRef.current == data.length - 1) {
+        setCurrentIndexRef(0);
+      } else {
+        setCurrentIndexRef(currentIndexRef.current + 1);
+      }
+    }, 1000);
   }, []); */
 
   React.useEffect(() => {
-    Animated.spring(scrollX, {
-      toValue: scrollXIndex,
-      useNativeDriver: true,
+    if (currentIndex === data.length - VISIBLE_ITEMS) {
+      const newData = [...data, ...data];
+      setData(newData);
+    }
+  }, [currentIndex]);
+
+  React.useEffect(() => {
+    Animated.spring(scrollXAnimated, {
+      toValue: currentIndex,
+      useNativeDriver: false,
     }).start();
-  });
+  }, [currentIndex]);
 
   return (
     <>
       <StatusBar hidden />
-      <Animated.View
-        style={{ flex: 1 }}
-        {...panResponder.panHandlers}
-      >
+      <View
+        style={{ flex: 1 }}>
         <FlatList
           data={data}
           bounces={false}
@@ -97,7 +125,6 @@ const App = () => {
           contentContainerStyle={{
             flex: 1,
           }}
-          inverted={true}
           scrollEnabled={false}
           removeClippedSubviews={false}
           keyExtractor={(item, index) => index.toString()}
@@ -116,37 +143,69 @@ const App = () => {
             );
           }}
           renderItem={({ item, index }) => {
-            const inputRange = [index - 1, index, index + 1];
-            const translateX = scrollX.interpolate({
-              inputRange: [(index - 1) * WINDOW_WIDTH, index * WINDOW_WIDTH, (index + 1) * WINDOW_WIDTH],
-              outputRange: [(index - 1) * 100, index * 100, (index + 1) * 100],
-            });
-            const scaleY = scrollXIndex.interpolate({
-              inputRange,
-              outputRange: [1.4, 1, 0.8],
-            });
-            const opacity = scrollXIndex.interpolate({
-              inputRange,
-              outputRange: [1 - 1 / VISIBLE_ITEMS, 1, 0],
-            });
+            if (index < currentIndexRef.current) {
+              return null;
+            }
 
-            return (
-              <Animated.View style={{
-                position: 'absolute',
-                opacity,
-                transform: [
-                  {
-                    translateX,
-                  },
-                  { scaleY }
-                ],
-              }}>
-                <Hero {...item} />
-              </Animated.View>
-            )
+            if (index === currentIndexRef.current) {
+              const rotate = scrollX.interpolate({
+                inputRange: [-WINDOW_WIDTH / 2, 0],
+                outputRange: ['-10deg', '0deg'],
+                extrapolate: "clamp"
+              });
+
+              return (
+                <Animated.View
+                  {...panResponder.panHandlers}
+                  style={{
+                    position: 'absolute',
+                    /* opacity, */
+                    transform: [
+                      {
+                        translateX: scrollX
+                      },
+                      {
+                        rotate: rotate
+                      },
+                    ],
+                  }}>
+                  <Hero {...item} scrollX={scrollXItem} />
+                </Animated.View>
+              );
+            } else {
+              const inputRange = [index - 2, index - 1, index];
+              const scaleX = scrollXAnimated.interpolate({
+                inputRange,
+                outputRange: [0.9, 1, 1],
+              });
+
+              const translateY = scrollXAnimated.interpolate({
+                inputRange,
+                outputRange: [-20, 0, 0],
+              });
+
+              const opacity = scrollXAnimated.interpolate({
+                inputRange,
+                outputRange: [1 - 1 / VISIBLE_ITEMS, 1, 0],
+              });
+
+              return (
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    opacity,
+                    transform: [
+                      { scaleX },
+                      { translateY }
+                    ]
+                  }}>
+                  <Hero {...item} />
+                </Animated.View>
+              );
+            }
           }}
         />
-      </Animated.View>
+      </View>
     </>
   );
 };

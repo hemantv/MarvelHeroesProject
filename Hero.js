@@ -15,7 +15,9 @@ const Hero = ({
     color,
     title,
     name,
-    image
+    description,
+    image,
+    scrollX
 }) => {
 
     const backgroundAnim = new Animated.Value(0);
@@ -34,7 +36,7 @@ const Hero = ({
 
     const background = backgroundAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [400, 0]
+        outputRange: [320, 0]
     })
 
     const avatarAnim = new Animated.Value(0);
@@ -185,14 +187,22 @@ const Hero = ({
             <AnimatedBackground2 style={{
                 transform: [{ translateY: background2 }]
             }} />
-            {/* <AnimatedAvatar
+            <AnimatedAvatar
                 source={image}
                 style={{
                     width: WINDOW_WIDTH,
                     height: WINDOW_WIDTH,
-                    transform: [{ translateY: avatar }]
+                    transform: [{ translateY: avatar }, {
+                        scale: scrollX
+                            ? scrollX.interpolate({
+                                inputRange: [-WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2],
+                                outputRange: [0.1, 1, 0.1],
+                                extrapolate: "clamp"
+                            })
+                            : 0
+                    }]
                 }}
-            /> */}
+            />
             <AnimatedForeground style={{
                 bottom: foreground
             }}>
@@ -219,9 +229,8 @@ const Hero = ({
                 transform: [{ translateY: detail }]
             }}>
                 <Description>
-                    Toney Stark is a genius, billionaire, philanthropist and the former head of Stark Industries. Using his own great wealth and exceptional technical knowledge,
-
-                    </Description>
+                    {description}
+                </Description>
                 <Back onPress={onBackPress}>
                     <BackLabel style={{ color: color }}>Back</BackLabel>
                 </Back>
