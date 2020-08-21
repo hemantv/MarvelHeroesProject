@@ -89,9 +89,10 @@ const App = () => {
   ).current;
 
   React.useEffect(() => {
-    if (currentIndex === data.length - VISIBLE_ITEMS) {
-      const newData = [...data, ...data];
+    if (currentIndex == data.length - VISIBLE_ITEMS) {
+      const newData = [...data.slice(currentIndex, data.length), ...data.slice(0, currentIndex)];
       setData(newData);
+      setCurrentIndexRef(0);
     }
   }, [currentIndex]);
 
