@@ -36,7 +36,7 @@ const Hero = ({
 
     const background = backgroundAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [320, 0]
+        outputRange: [(40 / 100 * WINDOW_HEIGHT), 0],
     })
 
     const avatarAnim = new Animated.Value(0);
@@ -55,7 +55,7 @@ const Hero = ({
 
     const avatar = avatarAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [200, STATUSBAR_HEIGHT]
+        outputRange: [(20 / 100 * WINDOW_HEIGHT), STATUSBAR_HEIGHT]
     })
 
     const knowMoreAnim = new Animated.Value(0);
@@ -93,7 +93,7 @@ const Hero = ({
 
     const foreground = foregroundAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [10, 160]
+        outputRange: [0, 160]
     })
 
     const background2Anim = new Animated.Value(0);
@@ -150,11 +150,10 @@ const Hero = ({
 
     const detail = detailAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: [WINDOW_HEIGHT, WINDOW_HEIGHT - 260]
+        outputRange: [WINDOW_HEIGHT, WINDOW_HEIGHT - 220]
     })
 
     const onKnowMorePress = () => {
-        console.log('clicked');
         animateBackground(1);
         animateKnowMore(1, () => {
             animateAvatar(1);
@@ -204,7 +203,7 @@ const Hero = ({
                 }}
             />
             <AnimatedForeground style={{
-                bottom: foreground
+                bottom: foreground,
             }}>
                 <AnimatedTitle style={{
                     color: titleColor
@@ -217,7 +216,7 @@ const Hero = ({
                     {name}
                 </AnimatedName>
                 <AnimatedKnowMore onPress={onKnowMorePress} style={{
-                    left: knowMoreAnim
+                    left: knowMoreAnim,
                 }}>
                     <AnimatedKnowMoreLabel style={{
                         opacity: knowMoreOpacity
@@ -240,7 +239,7 @@ const Hero = ({
 }
 
 const Container = styled.View`        
-    
+       
 `
 
 const Background = styled.View`       
@@ -265,7 +264,7 @@ const AnimatedBackground2 = Animated.createAnimatedComponent(Background2);
 
 const Foreground = styled.View`
     position: absolute;
-    padding: 48px 48px 48px 48px;
+    padding: 32px 48px;
 `
 
 const AnimatedForeground = Animated.createAnimatedComponent(Foreground);
@@ -287,11 +286,12 @@ const Title = styled.Text`
 const AnimatedTitle = Animated.createAnimatedComponent(Title);
 
 const Name = styled.Text`
-    font-size: 24px;
+    font-size: 32px;
     font-weight: bold;
     text-transform: lowercase;
     color: #ffffff;
-    line-height: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 `
 
 const AnimatedName = Animated.createAnimatedComponent(Name);
@@ -305,8 +305,8 @@ const AnimatedKnowMore = Animated.createAnimatedComponent(KnowMore);
 const KnowMoreLabel = styled.Text`
     font-size: 24px;
     color: yellow;
-    text-transform: lowercase;
-    line-height: 60px;
+    text-transform: lowercase;    
+    padding-bottom: 8px;
 `
 
 const AnimatedKnowMoreLabel = Animated.createAnimatedComponent(KnowMoreLabel);

@@ -23,7 +23,7 @@ import {
 import Hero from './Hero';
 
 const DATA = [
-  { id: 'spider_man', color: '#C51926', title: 'Spider Man', name: 'Peter Parker', description: 'Peter Benjamin Parker is a high school student and a superhero with spider-like abilities, fighting crime as his alter ego Spider-Man.', image: require('./assets/spider_man.png') },
+  { key: 'spider_man', color: '#C51926', title: 'Spider Man', name: 'Peter Parker', description: 'Peter Benjamin Parker is a high school student and a superhero with spider-like abilities, fighting crime as his alter ego Spider-Man.', image: require('./assets/spider_man.png') },
   { key: 'iron_man', color: '#E08F04', title: 'Iron Man', name: 'Tony Stark', description: 'Tony Stark is a genius, billionaire, philanthropist and the former head of Stark Industries. Using his own great wealth and exceptional technical knowledge.', image: require('./assets/iron_man.png') },
   { key: 'captain_america', color: '#204CC3', title: 'Captain America', name: 'Steve Rogers', description: 'Steven Grant "Steve" Rogers was a World War II veteran, and is known as the world\'s first superhero. Born within Brooklyn, New York City.', image: require('./assets/captain_america.png') },
   /* { key: 'black_widow', color: '#e08f04', title: 'Black Widow', name: 'Natalia Alianovna Romanoff', description: 'Natalia Alianovna "Natasha" Romanoff was one of the most talented spies and assassins in the entire world and a founding member of the Avengers.', image: require('./assets/black_widow.png') },
@@ -88,16 +88,6 @@ const App = () => {
     })
   ).current;
 
-  /* React.useEffect(() => {
-    setInterval(() => {
-      if (currentIndexRef.current == data.length - 1) {
-        setCurrentIndexRef(0);
-      } else {
-        setCurrentIndexRef(currentIndexRef.current + 1);
-      }
-    }, 1000);
-  }, []); */
-
   React.useEffect(() => {
     if (currentIndex === data.length - VISIBLE_ITEMS) {
       const newData = [...data, ...data];
@@ -115,97 +105,77 @@ const App = () => {
   return (
     <>
       <StatusBar hidden />
-      <View
-        style={{ flex: 1 }}>
-        <FlatList
-          data={data}
-          bounces={false}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            flex: 1,
-          }}
-          scrollEnabled={false}
-          removeClippedSubviews={false}
-          keyExtractor={(item, index) => index.toString()}
-          CellRendererComponent={({
-            item,
-            index,
-            children,
-            style,
-            ...props
-          }) => {
-            const newStyle = [style, { zIndex: data.length - index }];
+      <ScrollView
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: 'center',
+        }}>
+        {data.map((item, index) => {
+          if (index < currentIndexRef.current) {
+            return null;
+          }
+
+          if (index === currentIndexRef.current) {
+            const rotate = scrollX.interpolate({
+              inputRange: [-WINDOW_WIDTH / 2, 0],
+              outputRange: ['-10deg', '0deg'],
+              extrapolate: "clamp"
+            });
+
             return (
-              <View style={newStyle} index={index} {...props}>
-                {children}
-              </View>
+              <Animated.View
+                key={item.key}
+                {...panResponder.panHandlers}
+                style={{
+                  position: 'absolute',
+                  zIndex: data.length - index,
+                  transform: [
+                    {
+                      translateX: scrollX
+                    },
+                    {
+                      rotate: rotate
+                    },
+                  ],
+                }}>
+                <Hero {...item} scrollX={scrollXItem} />
+              </Animated.View>
             );
-          }}
-          renderItem={({ item, index }) => {
-            if (index < currentIndexRef.current) {
-              return null;
-            }
+          } else {
+            const inputRange = [index - 2, index - 1, index];
+            const scaleX = scrollXAnimated.interpolate({
+              inputRange,
+              outputRange: [0.9, 1, 1],
+            });
 
-            if (index === currentIndexRef.current) {
-              const rotate = scrollX.interpolate({
-                inputRange: [-WINDOW_WIDTH / 2, 0],
-                outputRange: ['-10deg', '0deg'],
-                extrapolate: "clamp"
-              });
+            const translateY = scrollXAnimated.interpolate({
+              inputRange,
+              outputRange: [-20, 0, 0],
+            });
 
-              return (
-                <Animated.View
-                  {...panResponder.panHandlers}
-                  style={{
-                    position: 'absolute',
-                    /* opacity, */
-                    transform: [
-                      {
-                        translateX: scrollX
-                      },
-                      {
-                        rotate: rotate
-                      },
-                    ],
-                  }}>
-                  <Hero {...item} scrollX={scrollXItem} />
-                </Animated.View>
-              );
-            } else {
-              const inputRange = [index - 2, index - 1, index];
-              const scaleX = scrollXAnimated.interpolate({
-                inputRange,
-                outputRange: [0.9, 1, 1],
-              });
+            const opacity = scrollXAnimated.interpolate({
+              inputRange,
+              outputRange: [1 - 1 / VISIBLE_ITEMS, 1, 0],
+            });
 
-              const translateY = scrollXAnimated.interpolate({
-                inputRange,
-                outputRange: [-20, 0, 0],
-              });
-
-              const opacity = scrollXAnimated.interpolate({
-                inputRange,
-                outputRange: [1 - 1 / VISIBLE_ITEMS, 1, 0],
-              });
-
-              return (
-                <Animated.View
-                  style={{
-                    position: 'absolute',
-                    opacity,
-                    transform: [
-                      { scaleX },
-                      { translateY }
-                    ]
-                  }}>
-                  <Hero {...item} />
-                </Animated.View>
-              );
-            }
-          }}
-        />
-      </View>
+            return (
+              <Animated.View
+                key={item.key}
+                style={{
+                  position: 'absolute',
+                  zIndex: data.length - index,
+                  opacity,
+                  transform: [
+                    { scaleX },
+                    { translateY }
+                  ]
+                }}>
+                <Hero {...item} />
+              </Animated.View>
+            );
+          }
+        })}
+      </ScrollView>
     </>
   );
 };
