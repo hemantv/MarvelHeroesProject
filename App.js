@@ -28,8 +28,8 @@ const DATA = [
   { key: 'captain_america', color: '#204CC3', title: 'Captain America', name: 'Steve Rogers', description: 'Steven Grant "Steve" Rogers was a World War II veteran, and is known as the world\'s first superhero. Born within Brooklyn, New York City.', image: require('./assets/captain_america.png') },
   /* { key: 'black_widow', color: '#e08f04', title: 'Black Widow', name: 'Natalia Alianovna Romanoff', description: 'Natalia Alianovna "Natasha" Romanoff was one of the most talented spies and assassins in the entire world and a founding member of the Avengers.', image: require('./assets/black_widow.png') },
   { key: 'thor', color: '#e08f04', title: 'Thor Odinson', name: 'Thor Odinson', description: 'Thor Odinson is the current king of Asgard, a founding member of the Avengers, and the God of Thunder.', image: require('./assets/thor.png') }, */
-  { key: 'doctor_strange', color: '#ab0c0c', title: 'Doctor Strange', name: 'Stephen Vincent Strange', description: 'Stephen Vincent Strange M.D., Ph.D is a powerful sorcerer and Master of the Mystic Arts.', image: require('./assets/doctor_strange.png') },
-  { key: 'hulk', color: '#875094', title: 'Hulk', name: 'Robert Bruce Banner', description: 'Robert Bruce Banner, M.D., Ph.D., is a renowned scientist and a founding member of the Avengers. .', image: require('./assets/hulk.png') },
+  { key: 'doctor_strange', color: '#ab0c0c', title: 'Doctor Strange', name: 'Stephen Vincent', description: 'Stephen Vincent Strange M.D., Ph.D is a powerful sorcerer and Master of the Mystic Arts.', image: require('./assets/doctor_strange.png') },
+  { key: 'hulk', color: '#875094', title: 'Hulk', name: 'Robert Bruce Banner', description: 'Bruce Banner, M.D., Ph.D., is a renowned scientist and a founding member of the Avengers. .', image: require('./assets/hulk.png') },
 ]
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -106,10 +106,13 @@ const App = () => {
   return (
     <>
       <StatusBar hidden />
-      <View style={{
-        flex: 1,
-        justifyContent: 'center',
-      }}>
+      <ScrollView
+        horizontal={true}
+        scrollEnabled={false}
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: 'center',
+        }}>
         {data.map((item, index) => {
           if (index < currentIndexRef.current) {
             return null;
@@ -175,7 +178,7 @@ const App = () => {
             );
           }
         })}
-      </View>
+      </ScrollView>
     </>
   );
 };

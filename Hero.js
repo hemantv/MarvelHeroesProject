@@ -12,6 +12,7 @@ const STATUSBAR_HEIGHT = getStatusBarHeight();
 
 const DEF_VALUE_AVATAR = (15 / 100 * WINDOW_HEIGHT);
 const DEF_VALUE_BACKGROUND = (40 / 100 * WINDOW_HEIGHT);
+const DEF_VALUE_FOREGROUND = DEF_VALUE_AVATAR + WINDOW_WIDTH;
 
 const ANIMATION_BOUNCINESS = 12;
 const ANIMATION_DURATION = 300;
@@ -24,19 +25,14 @@ const Hero = ({
     description,
     image,
     scrollX,
-    expanded
 }) => {
-
-    const backgroundAnim = new Animated.Value(DEF_VALUE_BACKGROUND);
-    const avatarAnim = new Animated.Value(DEF_VALUE_AVATAR);
-    const knowMoreAnim = new Animated.Value(1);
-    const foregroundAnim = new Animated.Value(10);
-    const background2Anim = new Animated.Value(WINDOW_HEIGHT + 100);
-    const titleAnim = new Animated.Value(0);
-    const detailAnim = new Animated.Value(0);
-
-    const open = () => onKnowMorePress;
-    const close = () => onBackPress;
+    const backgroundAnim = React.useRef(new Animated.Value(DEF_VALUE_BACKGROUND)).current;
+    const avatarAnim = React.useRef(new Animated.Value(DEF_VALUE_AVATAR)).current;
+    const knowMoreAnim = React.useRef(new Animated.Value(1)).current;
+    const foregroundAnim = React.useRef(new Animated.Value(DEF_VALUE_FOREGROUND)).current;
+    const background2Anim = React.useRef(new Animated.Value(WINDOW_HEIGHT + 100)).current;
+    const titleAnim = React.useRef(new Animated.Value(0)).current;
+    const detailAnim = React.useRef(new Animated.Value(WINDOW_HEIGHT / 2)).current;
 
     const onKnowMorePress = () => {
         Animated.sequence([
@@ -59,7 +55,7 @@ const Hero = ({
                     useNativeDriver: true
                 }),
                 Animated.spring(foregroundAnim, {
-                    toValue: 120,
+                    toValue: STATUSBAR_HEIGHT + WINDOW_WIDTH,
                     bounciness: ANIMATION_BOUNCINESS,
                     useNativeDriver: false
                 })
@@ -76,7 +72,7 @@ const Hero = ({
                     useNativeDriver: false
                 }),
                 Animated.timing(detailAnim, {
-                    toValue: -220,
+                    toValue: -30,
                     duration: ANIMATION_DURATION,
                     useNativeDriver: true
                 })
@@ -110,7 +106,7 @@ const Hero = ({
                     useNativeDriver: true
                 }),
                 Animated.spring(foregroundAnim, {
-                    toValue: 10,
+                    toValue: DEF_VALUE_FOREGROUND,
                     bounciness: ANIMATION_BOUNCINESS,
                     useNativeDriver: false
                 })
@@ -172,7 +168,7 @@ const Hero = ({
                 }}
             />
             <AnimatedForeground style={{
-                bottom: foregroundAnim
+                transform: [{ translateY: foregroundAnim }]
             }}>
                 <AnimatedTitle style={{
                     color: titleColor
@@ -188,21 +184,20 @@ const Hero = ({
                     transform: [{ translateX: knowMoreAnim }],
                 }}>
                     <AnimatedKnowMoreLabel style={{
-                        opacity: knowMoreAnim,
+                        opacity: knowMoreAnim
                     }}>Know More</AnimatedKnowMoreLabel>
                 </AnimatedKnowMore>
+                <AnimatedDetail style={{
+                    transform: [{ translateY: detailAnim }]
+                }}>
+                    <Description numberOfLines={4} ellipsizeMode='tail'>
+                        {description}
+                    </Description>
+                    <Back onPress={onBackPress}>
+                        <BackLabel style={{ color: color }}>Back</BackLabel>
+                    </Back>
+                </AnimatedDetail>
             </AnimatedForeground>
-            <AnimatedDetail style={{
-                width: WINDOW_WIDTH,
-                transform: [{ translateY: detailAnim }]
-            }}>
-                <Description>
-                    {description}
-                </Description>
-                <Back onPress={onBackPress}>
-                    <BackLabel style={{ color: color }}>Back</BackLabel>
-                </Back>
-            </AnimatedDetail>
         </Container>
     )
 }
@@ -272,16 +267,14 @@ const AnimatedKnowMore = Animated.createAnimatedComponent(KnowMore);
 const KnowMoreLabel = styled.Text`
     font-size: 24px;
     color: yellow;
-    text-transform: lowercase;    
-    padding-top: 16px;
-    padding-bottom: 16px;
+    text-transform: lowercase;
+    padding-top: 8px;
+    padding-bottom: 8px;
 `
 
 const AnimatedKnowMoreLabel = Animated.createAnimatedComponent(KnowMoreLabel);
 
-const Detail = styled.View`    
-    /* position: absolute; */
-    padding: 0px 48px;
+const Detail = styled.View`
 `
 
 const AnimatedDetail = Animated.createAnimatedComponent(Detail);
@@ -289,11 +282,12 @@ const AnimatedDetail = Animated.createAnimatedComponent(Detail);
 const Description = styled.Text`
     font-size: 18px;
     color: #888888;
-    text-transform: lowercase;    
+    text-transform: lowercase;  
+    height: 100px;
+    line-height: 24px;
     border-top-width: 1px;
     border-bottom-width: 1px;
-    border-color: #dddddd;
-    padding: 16px 0px;
+    border-color: #dddddd;    
 `
 
 const Back = styled.TouchableOpacity``;
