@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components/native'
 import {
-    View, Text, Animated, Dimensions
+    Animated, Dimensions
 } from 'react-native';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
@@ -43,7 +43,7 @@ const Hero = ({
         Animated.sequence([
             Animated.parallel([
                 Animated.timing(backgroundAnim, {
-                    toValue: 0,
+                    toValue: -50,
                     duration: ANIMATION_DURATION,
                     useNativeDriver: true
                 }),
@@ -62,7 +62,7 @@ const Hero = ({
                 Animated.spring(foregroundAnim, {
                     toValue: STATUSBAR_HEIGHT + SIZE_IMAGE,
                     bounciness: ANIMATION_BOUNCINESS,
-                    useNativeDriver: false
+                    useNativeDriver: true
                 })
             ]),
             Animated.parallel([
@@ -113,7 +113,7 @@ const Hero = ({
                 Animated.spring(foregroundAnim, {
                     toValue: VALUE_FOREGROUND,
                     bounciness: ANIMATION_BOUNCINESS,
-                    useNativeDriver: false
+                    useNativeDriver: true
                 })
             ]),
             Animated.parallel([
@@ -214,7 +214,7 @@ const Container = styled.View`
 
 const Background = styled.View`       
     width: 100%;   
-    height: 100%;
+    height: 110%;
     border-top-left-radius: 40px;
     border-top-right-radius: 40px;
 `
@@ -232,7 +232,7 @@ const AnimatedBackground2 = Animated.createAnimatedComponent(Background2);
 
 const Foreground = styled.View`
     position: absolute;
-    padding: 32px 48px;
+    padding: 8px 48px;
 `
 
 const AnimatedForeground = Animated.createAnimatedComponent(Foreground);
@@ -258,8 +258,6 @@ const Name = styled.Text`
     font-weight: bold;
     text-transform: lowercase;
     color: #ffffff;
-    padding-top: 12px;
-    padding-bottom: 12px;
 `
 
 const AnimatedName = Animated.createAnimatedComponent(Name);
@@ -274,8 +272,6 @@ const KnowMoreLabel = styled.Text`
     font-size: 24px;
     color: yellow;
     text-transform: lowercase;
-    padding-top: 8px;
-    padding-bottom: 8px;
 `
 
 const AnimatedKnowMoreLabel = Animated.createAnimatedComponent(KnowMoreLabel);
