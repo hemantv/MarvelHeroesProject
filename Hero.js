@@ -10,12 +10,17 @@ const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 const STATUSBAR_HEIGHT = getStatusBarHeight();
 
-const DEF_VALUE_AVATAR = (15 / 100 * WINDOW_HEIGHT);
-const DEF_VALUE_BACKGROUND = (40 / 100 * WINDOW_HEIGHT);
-const DEF_VALUE_FOREGROUND = DEF_VALUE_AVATAR + WINDOW_WIDTH;
-
 const ANIMATION_BOUNCINESS = 12;
 const ANIMATION_DURATION = 300;
+const SIZE_IMAGE = WINDOW_WIDTH - (10 / 100 * WINDOW_WIDTH);
+
+const VALUE_BACKGROUND = (40 / 100 * WINDOW_HEIGHT);
+const VALUE_AVATAR = (15 / 100 * WINDOW_HEIGHT);
+const VALUE_KNOWMORE = 1;
+const VALUE_FOREGROUND = VALUE_AVATAR + SIZE_IMAGE;
+const VALUE_BACKGROUND2 = WINDOW_HEIGHT + 100;
+const VALUE_TITLE = 0;
+const VALUE_DETAIL = WINDOW_HEIGHT / 2;
 
 const Hero = ({
     id,
@@ -26,13 +31,13 @@ const Hero = ({
     image,
     scrollX,
 }) => {
-    const backgroundAnim = React.useRef(new Animated.Value(DEF_VALUE_BACKGROUND)).current;
-    const avatarAnim = React.useRef(new Animated.Value(DEF_VALUE_AVATAR)).current;
-    const knowMoreAnim = React.useRef(new Animated.Value(1)).current;
-    const foregroundAnim = React.useRef(new Animated.Value(DEF_VALUE_FOREGROUND)).current;
-    const background2Anim = React.useRef(new Animated.Value(WINDOW_HEIGHT + 100)).current;
-    const titleAnim = React.useRef(new Animated.Value(0)).current;
-    const detailAnim = React.useRef(new Animated.Value(WINDOW_HEIGHT / 2)).current;
+    const backgroundAnim = React.useRef(new Animated.Value(VALUE_BACKGROUND)).current;
+    const avatarAnim = React.useRef(new Animated.Value(VALUE_AVATAR)).current;
+    const knowMoreAnim = React.useRef(new Animated.Value(VALUE_KNOWMORE)).current;
+    const foregroundAnim = React.useRef(new Animated.Value(VALUE_FOREGROUND)).current;
+    const background2Anim = React.useRef(new Animated.Value(VALUE_BACKGROUND2)).current;
+    const titleAnim = React.useRef(new Animated.Value(VALUE_TITLE)).current;
+    const detailAnim = React.useRef(new Animated.Value(VALUE_DETAIL)).current;
 
     const onKnowMorePress = () => {
         Animated.sequence([
@@ -55,7 +60,7 @@ const Hero = ({
                     useNativeDriver: true
                 }),
                 Animated.spring(foregroundAnim, {
-                    toValue: STATUSBAR_HEIGHT + WINDOW_WIDTH,
+                    toValue: STATUSBAR_HEIGHT + SIZE_IMAGE,
                     bounciness: ANIMATION_BOUNCINESS,
                     useNativeDriver: false
                 })
@@ -84,41 +89,41 @@ const Hero = ({
         Animated.sequence([
             Animated.parallel([
                 Animated.timing(background2Anim, {
-                    toValue: WINDOW_HEIGHT,
+                    toValue: VALUE_BACKGROUND2,
                     duration: ANIMATION_DURATION,
                     useNativeDriver: true
                 }),
                 Animated.timing(titleAnim, {
-                    toValue: 0,
+                    toValue: VALUE_TITLE,
                     duration: ANIMATION_DURATION,
                     useNativeDriver: false
                 }),
                 Animated.timing(detailAnim, {
-                    toValue: WINDOW_HEIGHT,
+                    toValue: VALUE_DETAIL,
                     duration: ANIMATION_DURATION,
                     useNativeDriver: true
                 })
             ]),
             Animated.parallel([
                 Animated.spring(avatarAnim, {
-                    toValue: DEF_VALUE_AVATAR,
+                    toValue: VALUE_AVATAR,
                     bounciness: ANIMATION_BOUNCINESS,
                     useNativeDriver: true
                 }),
                 Animated.spring(foregroundAnim, {
-                    toValue: DEF_VALUE_FOREGROUND,
+                    toValue: VALUE_FOREGROUND,
                     bounciness: ANIMATION_BOUNCINESS,
                     useNativeDriver: false
                 })
             ]),
             Animated.parallel([
                 Animated.timing(backgroundAnim, {
-                    toValue: DEF_VALUE_BACKGROUND,
+                    toValue: VALUE_BACKGROUND,
                     duration: ANIMATION_DURATION,
                     useNativeDriver: true
                 }),
                 Animated.timing(knowMoreAnim, {
-                    toValue: 1,
+                    toValue: VALUE_KNOWMORE,
                     duration: ANIMATION_DURATION,
                     useNativeDriver: true
                 })
@@ -143,8 +148,9 @@ const Hero = ({
             <AnimatedAvatar
                 source={image}
                 style={{
-                    width: WINDOW_WIDTH,
-                    height: WINDOW_WIDTH,
+                    alignSelf: 'center',
+                    width: SIZE_IMAGE,
+                    height: SIZE_IMAGE,
                     ...Platform.select({
                         ios: {
                             shadowColor: '#000',
@@ -190,7 +196,7 @@ const Hero = ({
                 <AnimatedDetail style={{
                     transform: [{ translateY: detailAnim }]
                 }}>
-                    <Description numberOfLines={4} ellipsizeMode='tail'>
+                    <Description numberOfLines={3} ellipsizeMode='tail'>
                         {description}
                     </Description>
                     <Back onPress={onBackPress}>
@@ -248,7 +254,7 @@ const Title = styled.Text`
 const AnimatedTitle = Animated.createAnimatedComponent(Title);
 
 const Name = styled.Text`
-    font-size: 32px;
+    font-size: 28px;
     font-weight: bold;
     text-transform: lowercase;
     color: #ffffff;
@@ -282,12 +288,8 @@ const AnimatedDetail = Animated.createAnimatedComponent(Detail);
 const Description = styled.Text`
     font-size: 18px;
     color: #888888;
-    text-transform: lowercase;  
-    height: 100px;
+    text-transform: lowercase;
     line-height: 24px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-color: #dddddd;    
 `
 
 const Back = styled.TouchableOpacity``;

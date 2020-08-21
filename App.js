@@ -8,17 +8,11 @@
 
 import React from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
   ScrollView,
-  View,
-  Text,
   StatusBar,
-  FlatList,
   Animated,
   Dimensions,
-  PanResponder,
-  TouchableOpacity
+  PanResponder
 } from 'react-native';
 import Hero from './Hero';
 
@@ -26,15 +20,11 @@ const DATA = [
   { key: 'spider_man', color: '#C51926', title: 'Spider Man', name: 'Peter Parker', description: 'Peter Benjamin Parker is a high school student and a superhero with spider-like abilities, fighting crime as his alter ego Spider-Man.', image: require('./assets/spider_man.png') },
   { key: 'iron_man', color: '#E08F04', title: 'Iron Man', name: 'Tony Stark', description: 'Tony Stark is a genius, billionaire, philanthropist and the former head of Stark Industries. Using his own great wealth and exceptional technical knowledge.', image: require('./assets/iron_man.png') },
   { key: 'captain_america', color: '#204CC3', title: 'Captain America', name: 'Steve Rogers', description: 'Steven Grant "Steve" Rogers was a World War II veteran, and is known as the world\'s first superhero. Born within Brooklyn, New York City.', image: require('./assets/captain_america.png') },
-  /* { key: 'black_widow', color: '#e08f04', title: 'Black Widow', name: 'Natalia Alianovna Romanoff', description: 'Natalia Alianovna "Natasha" Romanoff was one of the most talented spies and assassins in the entire world and a founding member of the Avengers.', image: require('./assets/black_widow.png') },
-  { key: 'thor', color: '#e08f04', title: 'Thor Odinson', name: 'Thor Odinson', description: 'Thor Odinson is the current king of Asgard, a founding member of the Avengers, and the God of Thunder.', image: require('./assets/thor.png') }, */
   { key: 'doctor_strange', color: '#ab0c0c', title: 'Doctor Strange', name: 'Stephen Vincent', description: 'Stephen Vincent Strange M.D., Ph.D is a powerful sorcerer and Master of the Mystic Arts.', image: require('./assets/doctor_strange.png') },
-  { key: 'hulk', color: '#875094', title: 'Hulk', name: 'Robert Bruce Banner', description: 'Bruce Banner, M.D., Ph.D., is a renowned scientist and a founding member of the Avengers. .', image: require('./assets/hulk.png') },
+  { key: 'hulk', color: '#875094', title: 'Hulk', name: 'Robert Bruce Banner', description: 'Robert Bruce Banner, M.D., Ph.D., is a renowned scientist and a founding member of the Avengers. .', image: require('./assets/hulk.png') },
 ]
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
-const WINDOW_HEIGHT = Dimensions.get('window').height;
-
 const VISIBLE_ITEMS = 3;
 
 const App = () => {
