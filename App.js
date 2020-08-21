@@ -106,11 +106,10 @@ const App = () => {
   return (
     <>
       <StatusBar hidden />
-      <ScrollView
-        contentContainerStyle={{
-          flex: 1,
-          justifyContent: 'center',
-        }}>
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+      }}>
         {data.map((item, index) => {
           if (index < currentIndexRef.current) {
             return null;
@@ -176,7 +175,7 @@ const App = () => {
             );
           }
         })}
-      </ScrollView>
+      </View>
     </>
   );
 };
