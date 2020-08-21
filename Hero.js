@@ -10,6 +10,9 @@ const WINDOW_HEIGHT = Dimensions.get('window').height;
 
 const STATUSBAR_HEIGHT = getStatusBarHeight();
 
+const DEF_VALUE_AVATAR = (20 / 100 * WINDOW_HEIGHT);
+const DEF_VALUE_BACKGROUND = (40 / 100 * WINDOW_HEIGHT);
+
 const Hero = ({
     id,
     color,
@@ -20,178 +23,126 @@ const Hero = ({
     scrollX
 }) => {
 
-    const backgroundAnim = new Animated.Value(0);
-
-    const animateBackground = (value, callback) => {
-        Animated.timing(backgroundAnim, {
-            toValue: value,
-            duration: 300,
-            useNativeDriver: false
-        }).start(() => {
-            if (callback) {
-                callback();
-            }
-        });
-    }
-
-    const background = backgroundAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [(40 / 100 * WINDOW_HEIGHT), 0],
-    })
-
-    const avatarAnim = new Animated.Value(0);
-
-    const animateAvatar = (value, callback) => {
-        Animated.spring(avatarAnim, {
-            toValue: value,
-            bounciness: 8,
-            useNativeDriver: false
-        }).start(() => {
-            if (callback) {
-                callback();
-            }
-        });
-    }
-
-    const avatar = avatarAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [(20 / 100 * WINDOW_HEIGHT), STATUSBAR_HEIGHT]
-    })
-
-    const knowMoreAnim = new Animated.Value(0);
-
-    const animateKnowMore = (value, callback) => {
-        Animated.timing(knowMoreAnim, {
-            toValue: value,
-            duration: 300,
-            useNativeDriver: false
-        }).start(() => {
-            if (callback) {
-                callback();
-            }
-        });
-    }
-
-    const knowMoreOpacity = knowMoreAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [1, 0]
-    });
-
-    const foregroundAnim = new Animated.Value(0);
-
-    const animateForeground = (value, callback) => {
-        Animated.spring(foregroundAnim, {
-            toValue: value,
-            bounciness: 8,
-            useNativeDriver: false
-        }).start(() => {
-            if (callback) {
-                callback();
-            }
-        });
-    }
-
-    const foreground = foregroundAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 160]
-    })
-
-    const background2Anim = new Animated.Value(0);
-
-    const animateBackground2 = (value, callback) => {
-        Animated.timing(background2Anim, {
-            toValue: value,
-            duration: 300,
-            useNativeDriver: false
-        }).start(() => {
-            if (callback) {
-                callback();
-            }
-        });
-    }
-
-    const background2 = background2Anim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [WINDOW_HEIGHT, 0]
-    })
-
+    const backgroundAnim = new Animated.Value(DEF_VALUE_BACKGROUND);
+    const avatarAnim = new Animated.Value(DEF_VALUE_AVATAR);
+    const knowMoreAnim = new Animated.Value(1);
+    const foregroundAnim = new Animated.Value(WINDOW_HEIGHT - 300);
+    const background2Anim = new Animated.Value(WINDOW_HEIGHT);
     const titleAnim = new Animated.Value(0);
+    const detailAnim = new Animated.Value(WINDOW_HEIGHT);
 
-    const animateTitle = (value, callback) => {
-        Animated.timing(titleAnim, {
-            toValue: value,
-            duration: 300,
-            useNativeDriver: false
-        }).start(() => {
-            if (callback) {
-                callback();
-            }
-        });
+    const onKnowMorePress = () => {
+        Animated.sequence([
+            Animated.parallel([
+                Animated.timing(backgroundAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true
+                }),
+                Animated.timing(knowMoreAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true
+                })
+            ]),
+            Animated.parallel([
+                Animated.spring(avatarAnim, {
+                    toValue: STATUSBAR_HEIGHT,
+                    bounciness: 8,
+                    useNativeDriver: true
+                }),
+                Animated.spring(foregroundAnim, {
+                    toValue: WINDOW_HEIGHT - 500,
+                    bounciness: 8,
+                    useNativeDriver: true
+                })
+            ]),
+            Animated.parallel([
+                Animated.timing(background2Anim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true
+                }),
+                Animated.timing(titleAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: false
+                }),
+                Animated.timing(detailAnim, {
+                    toValue: WINDOW_HEIGHT - 220,
+                    duration: 300,
+                    useNativeDriver: true
+                })
+            ])
+        ]).start();
+    }
+
+    const onBackPress = () => {
+        Animated.sequence([
+            Animated.parallel([
+                Animated.timing(background2Anim, {
+                    toValue: WINDOW_HEIGHT,
+                    duration: 300,
+                    useNativeDriver: true
+                }),
+                Animated.timing(titleAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: false
+                }),
+                Animated.timing(detailAnim, {
+                    toValue: WINDOW_HEIGHT,
+                    duration: 300,
+                    useNativeDriver: true
+                })
+            ]),
+            Animated.parallel([
+                Animated.spring(avatarAnim, {
+                    toValue: DEF_VALUE_AVATAR,
+                    bounciness: 8,
+                    useNativeDriver: true
+                }),
+                Animated.spring(foregroundAnim, {
+                    toValue: WINDOW_HEIGHT - 300,
+                    bounciness: 8,
+                    useNativeDriver: true
+                })
+            ]),
+            Animated.parallel([
+                Animated.timing(backgroundAnim, {
+                    toValue: DEF_VALUE_BACKGROUND,
+                    duration: 300,
+                    useNativeDriver: true
+                }),
+                Animated.timing(knowMoreAnim, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true
+                })
+            ])
+        ]).start();
     }
 
     const titleColor = titleAnim.interpolate({
         inputRange: [0, 1],
-        outputRange: ['#ffffff', '#000000']
+        outputRange: ['#FFFFFF', '#000000']
     })
-
-    const detailAnim = new Animated.Value(0);
-
-    const animateDetail = (value, callback) => {
-        Animated.timing(detailAnim, {
-            toValue: value,
-            duration: 300,
-            useNativeDriver: false
-        }).start(() => {
-            if (callback) {
-                callback();
-            }
-        });
-    }
-
-    const detail = detailAnim.interpolate({
-        inputRange: [0, 1],
-        outputRange: [WINDOW_HEIGHT, WINDOW_HEIGHT - 220]
-    })
-
-    const onKnowMorePress = () => {
-        animateBackground(1);
-        animateKnowMore(1, () => {
-            animateAvatar(1);
-            animateForeground(1, () => {
-                animateBackground2(1);
-                animateTitle(1);
-                animateDetail(1);
-            });
-        });
-    }
-
-    const onBackPress = () => {
-        animateBackground2(0);
-        animateTitle(0);
-        animateDetail(0, () => {
-            animateAvatar(0);
-            animateForeground(0, () => {
-                animateBackground(0);
-                animateKnowMore(0);
-            });
-        });
-    }
 
     return (
         <Container style={{ width: WINDOW_WIDTH, height: WINDOW_HEIGHT }}>
             <AnimatedBackground style={{
                 backgroundColor: color,
-                transform: [{ translateY: background }]
+                transform: [{ translateY: backgroundAnim }]
             }} />
             <AnimatedBackground2 style={{
-                transform: [{ translateY: background2 }]
+                transform: [{ translateY: background2Anim }]
             }} />
             <AnimatedAvatar
                 source={image}
                 style={{
                     width: WINDOW_WIDTH,
                     height: WINDOW_WIDTH,
-                    transform: [{ translateY: avatar }, {
+                    transform: [{ translateY: avatarAnim }, {
                         scale: scrollX
                             ? scrollX.interpolate({
                                 inputRange: [-WINDOW_WIDTH / 2, 0, WINDOW_WIDTH / 2],
@@ -203,7 +154,7 @@ const Hero = ({
                 }}
             />
             <AnimatedForeground style={{
-                bottom: foreground,
+                transform: [{ translateY: foregroundAnim }],
             }}>
                 <AnimatedTitle style={{
                     color: titleColor
@@ -216,16 +167,16 @@ const Hero = ({
                     {name}
                 </AnimatedName>
                 <AnimatedKnowMore onPress={onKnowMorePress} style={{
-                    left: knowMoreAnim,
+                    transform: [{ translateX: knowMoreAnim }],
                 }}>
                     <AnimatedKnowMoreLabel style={{
-                        opacity: knowMoreOpacity
+                        opacity: knowMoreAnim
                     }}>Know More</AnimatedKnowMoreLabel>
                 </AnimatedKnowMore>
             </AnimatedForeground>
             <AnimatedDetail style={{
                 width: WINDOW_WIDTH,
-                transform: [{ translateY: detail }]
+                transform: [{ translateY: detailAnim }]
             }}>
                 <Description>
                     {description}

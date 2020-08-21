@@ -65,23 +65,23 @@ const App = () => {
         if (gestureState.dx < -120) {
           Animated.timing(scrollX, {
             toValue: -WINDOW_WIDTH - 100,
-            useNativeDriver: false
+            useNativeDriver: true
           }).start(() => {
             scrollX.setValue(0);
             Animated.timing(scrollXItem, {
               toValue: 0,
-              useNativeDriver: false
+              useNativeDriver: true
             }).start();
             setCurrentIndexRef(currentIndexRef.current + 1);
           });
         } else {
           Animated.timing(scrollX, {
             toValue: 0,
-            useNativeDriver: false
+            useNativeDriver: true
           }).start();
           Animated.timing(scrollXItem, {
             toValue: 0,
-            useNativeDriver: false
+            useNativeDriver: true
           }).start();
         }
       }
@@ -98,7 +98,7 @@ const App = () => {
   React.useEffect(() => {
     Animated.spring(scrollXAnimated, {
       toValue: currentIndex,
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start();
   }, [currentIndex]);
 
