@@ -12,11 +12,12 @@ const STATUSBAR_HEIGHT = getStatusBarHeight();
 
 const ANIMATION_BOUNCINESS = 12;
 const ANIMATION_DURATION = 300;
-const SIZE_IMAGE = WINDOW_WIDTH - (10 / 100 * WINDOW_WIDTH);
 
-const VALUE_BACKGROUND = (40 / 100 * WINDOW_HEIGHT);
+const SIZE_IMAGE = (WINDOW_HEIGHT - WINDOW_WIDTH) * 0.9;
+
+const VALUE_BACKGROUND = SIZE_IMAGE * 0.9;
 const VALUE_KNOWMORE = 1;
-const VALUE_FOREGROUND = (20 / 100 * WINDOW_HEIGHT);
+const VALUE_FOREGROUND = VALUE_BACKGROUND * 0.5;
 const VALUE_BACKGROUND2 = WINDOW_HEIGHT + 100;
 const VALUE_TITLE = 0;
 const VALUE_DETAIL = WINDOW_HEIGHT / 2;
@@ -176,6 +177,7 @@ const Hero = ({
                     }}>Know More</AnimatedKnowMoreLabel>
                 </AnimatedKnowMore>
                 <AnimatedDetail style={{
+                    height: SIZE_IMAGE,
                     transform: [{ translateY: detailAnim }]
                 }}>
                     <Description numberOfLines={3} ellipsizeMode='tail'>
@@ -225,7 +227,7 @@ const Avatar = styled.Image`
 
 const AnimatedAvatar = Animated.createAnimatedComponent(Avatar);
 
-const Title = styled.Text`
+const Title = styled.Text`    
     font-size: 60px;
     font-weight: bold;    
     text-transform: lowercase;
@@ -272,7 +274,9 @@ const Description = styled.Text`
     line-height: 24px;
 `
 
-const Back = styled.TouchableOpacity``;
+const Back = styled.TouchableOpacity`
+    
+`;
 
 const BackLabel = styled.Text`
     font-size: 24px;    
