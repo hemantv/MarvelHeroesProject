@@ -9,4 +9,4 @@ Inspiration: https://dribbble.com/shots/5935613-Marvel-Movies-Interaction
 # Resources
 
 https://reactnative.dev/docs/animations  
-https://www.youtube.com/watch?v=g5rCMlPTgrM&t=1000s
+https://www.youtube.com/watch?v=g5rCMlPTgrM
