@@ -12,23 +12,62 @@ import {
   StatusBar,
   Animated,
   Dimensions,
-  PanResponder
+  PanResponder,
 } from 'react-native';
 import Hero from './Hero';
 
 const DATA = [
-  { key: 'spider_man', color: '#C51926', title: 'Spider Man', name: 'Peter Parker', description: 'Peter Benjamin Parker is a high school student and a superhero with spider-like abilities, fighting crime as his alter ego Spider-Man.', image: require('./assets/spider_man.png') },
-  { key: 'iron_man', color: '#E08F04', title: 'Iron Man', name: 'Tony Stark', description: 'Tony Stark is a genius, billionaire, philanthropist and the former head of Stark Industries. Using his own great wealth and exceptional technical knowledge.', image: require('./assets/iron_man.png') },
-  { key: 'captain_america', color: '#204CC3', title: 'Captain America', name: 'Steve Rogers', description: 'Steven Grant "Steve" Rogers was a World War II veteran, and is known as the world\'s first superhero. Born within Brooklyn, New York City.', image: require('./assets/captain_america.png') },
-  { key: 'doctor_strange', color: '#ab0c0c', title: 'Doctor Strange', name: 'Stephen Vincent', description: 'Stephen Vincent Strange M.D., Ph.D is a powerful sorcerer and Master of the Mystic Arts.', image: require('./assets/doctor_strange.png') },
-  { key: 'hulk', color: '#875094', title: 'Hulk', name: 'Robert Bruce Banner', description: 'Robert Bruce Banner, M.D., Ph.D., is a renowned scientist and a founding member of the Avengers. .', image: require('./assets/hulk.png') },
-]
+  {
+    key: 'spider_man',
+    color: '#C51926',
+    title: 'Spider Man',
+    name: 'Peter Parker',
+    description:
+      'Peter Benjamin Parker is a high school student and a superhero with spider-like abilities, fighting crime as his alter ego Spider-Man.',
+    image: require('./assets/spider_man.png'),
+  },
+  {
+    key: 'iron_man',
+    color: '#E08F04',
+    title: 'Iron Man',
+    name: 'Tony Stark',
+    description:
+      'Tony Stark is a genius, billionaire, philanthropist and the former head of Stark Industries. Using his own great wealth and exceptional technical knowledge.',
+    image: require('./assets/iron_man.png'),
+  },
+  {
+    key: 'captain_america',
+    color: '#204CC3',
+    title: 'Captain America',
+    name: 'Steve Rogers',
+    description:
+      'Steven Grant "Steve" Rogers was a World War II veteran, and is known as the world\'s first superhero. Born within Brooklyn, New York City.',
+    image: require('./assets/captain_america.png'),
+  },
+  {
+    key: 'doctor_strange',
+    color: '#ab0c0c',
+    title: 'Doctor Strange',
+    name: 'Stephen Vincent',
+    description:
+      'Stephen Vincent Strange M.D., Ph.D is a powerful sorcerer and Master of the Mystic Arts.',
+    image: require('./assets/doctor_strange.png'),
+  },
+  {
+    key: 'hulk',
+    color: '#875094',
+    title: 'Hulk',
+    name: 'Robert Bruce Banner',
+    description:
+      'Robert Bruce Banner, M.D., Ph.D., is a renowned scientist and a founding member of the Avengers. .',
+    image: require('./assets/hulk.png'),
+  },
+];
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
 const VISIBLE_ITEMS = 3;
 
 const App = () => {
-
   const [data, setData] = React.useState(DATA);
 
   const scrollX = React.useRef(new Animated.Value(0)).current;
@@ -40,7 +79,7 @@ const App = () => {
   const setCurrentIndexRef = (newCurrentIndex) => {
     currentIndexRef.current = newCurrentIndex;
     setCurrentIndex(newCurrentIndex);
-  }
+  };
 
   const panResponder = React.useRef(
     PanResponder.create({
@@ -55,32 +94,35 @@ const App = () => {
         if (gestureState.dx < -120) {
           Animated.timing(scrollX, {
             toValue: -WINDOW_WIDTH - 100,
-            useNativeDriver: true
+            useNativeDriver: true,
           }).start(() => {
             scrollX.setValue(0);
             Animated.timing(scrollXItem, {
               toValue: 0,
-              useNativeDriver: true
+              useNativeDriver: true,
             }).start();
             setCurrentIndexRef(currentIndexRef.current + 1);
           });
         } else {
           Animated.timing(scrollX, {
             toValue: 0,
-            useNativeDriver: true
+            useNativeDriver: true,
           }).start();
           Animated.timing(scrollXItem, {
             toValue: 0,
-            useNativeDriver: true
+            useNativeDriver: true,
           }).start();
         }
-      }
-    })
+      },
+    }),
   ).current;
 
   React.useEffect(() => {
     if (currentIndex == data.length - VISIBLE_ITEMS) {
-      const newData = [...data.slice(currentIndex, data.length), ...data.slice(0, currentIndex)];
+      const newData = [
+        ...data.slice(currentIndex, data.length),
+        ...data.slice(0, currentIndex),
+      ];
       setData(newData);
       setCurrentIndexRef(0);
     }
@@ -112,7 +154,7 @@ const App = () => {
             const rotate = scrollX.interpolate({
               inputRange: [-WINDOW_WIDTH / 2, 0],
               outputRange: ['-10deg', '0deg'],
-              extrapolate: "clamp"
+              extrapolate: 'clamp',
             });
 
             return (
@@ -124,10 +166,10 @@ const App = () => {
                   zIndex: data.length - index,
                   transform: [
                     {
-                      translateX: scrollX
+                      translateX: scrollX,
                     },
                     {
-                      rotate: rotate
+                      rotate: rotate,
                     },
                   ],
                 }}>
@@ -158,10 +200,7 @@ const App = () => {
                   position: 'absolute',
                   zIndex: data.length - index,
                   opacity,
-                  transform: [
-                    { scaleX },
-                    { translateY }
-                  ]
+                  transform: [{scaleX}, {translateY}],
                 }}>
                 <Hero {...item} />
               </Animated.View>
